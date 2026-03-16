@@ -65,43 +65,12 @@ export default async function HomePage() {
 
       <div className="w-16 h-px bg-gold/30 mb-10" />
 
-      {userRating ? (
-        <div className="text-center">
-          <p className={`font-serif text-gold italic mb-2 ${
-            userRating >= 5 ? "text-3xl" : userRating >= 3 ? "text-2xl" : "text-xl"
-          }`}>
-            {userRating === 1 && "Schade..."}
-            {userRating === 2 && "Geht so"}
-            {userRating === 3 && "Solide! 👍"}
-            {userRating === 4 && "Très bien! ✨"}
-            {userRating === 5 && "Magnifique! 🌟"}
-          </p>
-          <p className="text-muted text-sm">
-            Deine Bewertung: {userRating} von 5 Sternen
-          </p>
-          <div className="flex gap-4 mt-6 text-sm">
-            <a
-              href="/stats"
-              className="text-gold hover:text-gold-dark underline underline-offset-4 transition-colors"
-            >
-              Statistik ansehen
-            </a>
-            <a
-              href="/woche"
-              className="text-gold hover:text-gold-dark underline underline-offset-4 transition-colors"
-            >
-              Wochenplan
-            </a>
-          </div>
-        </div>
-      ) : (
-        <>
-          <p className="text-muted text-xs uppercase tracking-[0.15em] mb-6">
-            Wie war&apos;s?
-          </p>
-          <StarRating dishId={dish.id} />
-        </>
+      {!userRating && (
+        <p className="text-muted text-xs uppercase tracking-[0.15em] mb-6">
+          Wie war&apos;s?
+        </p>
       )}
+      <StarRating dishId={dish.id} initialRating={userRating} />
     </div>
   );
 }

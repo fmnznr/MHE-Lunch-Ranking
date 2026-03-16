@@ -47,6 +47,7 @@ export function StarRating({ dishId, initialRating, disabled }: StarRatingProps)
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cascadeTarget, setCascadeTarget] = useState<number>(0);
+  const [justRated, setJustRated] = useState(false);
 
   const handleClick = useCallback(async (stars: number) => {
     if (submitted || disabled || isSubmitting) return;
@@ -70,6 +71,7 @@ export function StarRating({ dishId, initialRating, disabled }: StarRatingProps)
 
     setRating(stars);
     setSubmitted(true);
+    setJustRated(true);
     setShowConfetti(true);
     setIsSubmitting(false);
   }, [submitted, disabled, isSubmitting, dishId]);
@@ -155,34 +157,34 @@ export function StarRating({ dishId, initialRating, disabled }: StarRatingProps)
       <AnimatePresence>
         {submitted && (
           <motion.div
-            initial={{ opacity: 0, scale: 0, y: 20 }}
+            initial={justRated ? { opacity: 0, scale: 0, y: 20 } : false}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{
-              delay: 1.2 + (cascadeTarget * 0.08),
+            transition={justRated ? {
+              delay: 0.5 + (cascadeTarget * 0.08),
               duration: 0.5,
               scale: {
                 type: "spring",
                 stiffness: 300,
                 damping: 12,
               },
-            }}
+            } : { duration: 0 }}
             className="text-center"
           >
             <p className={`font-serif ${reaction.size} text-gold italic`}>
               {reaction.text}
             </p>
             <motion.p
-              initial={{ opacity: 0 }}
+              initial={justRated ? { opacity: 0 } : false}
               animate={{ opacity: 1 }}
-              transition={{ delay: 1.4 + (cascadeTarget * 0.08) }}
+              transition={justRated ? { delay: 0.7 + (cascadeTarget * 0.08) } : { duration: 0 }}
               className="text-muted text-sm mt-2"
             >
               Deine Bewertung: {rating} von 5 Sternen
             </motion.p>
             <motion.div
-              initial={{ opacity: 0 }}
+              initial={justRated ? { opacity: 0 } : false}
               animate={{ opacity: 1 }}
-              transition={{ delay: 1.6 + (cascadeTarget * 0.08) }}
+              transition={justRated ? { delay: 0.9 + (cascadeTarget * 0.08) } : { duration: 0 }}
               className="flex gap-4 mt-6 text-sm"
             >
               <a
