@@ -51,7 +51,7 @@ export async function updateDish(
   id: string,
   data: {
     name?: string;
-    description?: string;
+    description?: string | null;
     imageUrl?: string;
     date?: string;
   }
@@ -60,7 +60,7 @@ export async function updateDish(
     .update(dishes)
     .set({
       ...(data.name !== undefined && { name: data.name }),
-      ...(data.description !== undefined && { description: data.description }),
+      ...(data.description !== undefined && { description: data.description ?? null }),
       ...(data.imageUrl !== undefined && { imageUrl: data.imageUrl }),
       ...(data.date !== undefined && { date: data.date }),
     })

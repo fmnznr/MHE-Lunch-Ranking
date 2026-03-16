@@ -72,13 +72,13 @@ export function AdminDishForm({ date, existingDish }: AdminDishFormProps) {
     if (existingDish) {
       await updateDish(existingDish.id, {
         name: name.trim(),
-        description: description.trim() || undefined,
+        description: description.trim() || null,
         imageUrl,
       });
     } else {
       await createDish({
         name: name.trim(),
-        description: description.trim() || undefined,
+        description: description.trim() || null,
         imageUrl,
         date,
       });
