@@ -59,12 +59,18 @@ export default async function StatsPage() {
         </div>
       )}
 
-      <div className="text-center mt-10">
+      <div className="flex justify-center gap-4 mt-10 text-sm">
         <a
           href="/"
-          className="text-gold hover:text-gold-dark underline underline-offset-4 text-sm transition-colors"
+          className="text-gold hover:text-gold-dark underline underline-offset-4 transition-colors"
         >
-          Zurück
+          Heute bewerten
+        </a>
+        <a
+          href="/woche"
+          className="text-gold hover:text-gold-dark underline underline-offset-4 transition-colors"
+        >
+          Wochenplan
         </a>
       </div>
     </div>

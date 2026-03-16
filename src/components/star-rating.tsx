@@ -11,31 +11,16 @@ interface StarRatingProps {
   disabled?: boolean;
 }
 
-function StarIcon({
-  filled,
-  hovered,
-}: {
-  filled: boolean;
-  hovered: boolean;
-}) {
+function StarIcon({ filled }: { filled: boolean }) {
   return (
     <svg
       viewBox="0 0 24 24"
-      className="w-12 h-12 sm:w-14 sm:h-14"
+      className="w-10 h-10 sm:w-12 sm:h-12"
       fill={filled ? "#C9A84C" : "none"}
       stroke="#C9A84C"
       strokeWidth={1.5}
     >
-      <motion.path
-        d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-        animate={{
-          scale: hovered ? 1.15 : 1,
-          filter: hovered
-            ? "drop-shadow(0 0 8px rgba(201, 168, 76, 0.6))"
-            : "drop-shadow(0 0 0px rgba(201, 168, 76, 0))",
-        }}
-        transition={{ type: "spring", stiffness: 400, damping: 15 }}
-      />
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
     </svg>
   );
 }
@@ -78,14 +63,19 @@ export function StarRating({ dishId, initialRating, disabled }: StarRatingProps)
             onClick={() => handleClick(star)}
             onMouseEnter={() => !submitted && setHover(star)}
             onMouseLeave={() => !submitted && setHover(0)}
+            animate={{
+              scale: !submitted && star <= hover ? 1.2 : 1,
+              filter:
+                !submitted && star <= hover
+                  ? "drop-shadow(0 0 8px rgba(201, 168, 76, 0.6))"
+                  : "drop-shadow(0 0 0px rgba(201, 168, 76, 0))",
+            }}
             whileTap={!submitted ? { scale: 0.9 } : {}}
-            className="cursor-pointer disabled:cursor-default p-1 focus:outline-none"
+            transition={{ type: "spring", stiffness: 400, damping: 15 }}
+            className="cursor-pointer disabled:cursor-default p-2 focus:outline-none"
             aria-label={`${star} Stern${star > 1 ? "e" : ""}`}
           >
-            <StarIcon
-              filled={star <= (hover || rating)}
-              hovered={!submitted && star <= hover}
-            />
+            <StarIcon filled={star <= (hover || rating)} />
           </motion.button>
         ))}
       </div>
