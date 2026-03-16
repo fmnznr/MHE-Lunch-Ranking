@@ -158,7 +158,7 @@ export function StarRating({ dishId, initialRating, disabled }: StarRatingProps)
             initial={{ opacity: 0, scale: 0, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{
-              delay: 0.3 + (cascadeTarget * 0.08),
+              delay: 1.2 + (cascadeTarget * 0.08),
               duration: 0.5,
               scale: {
                 type: "spring",
@@ -174,7 +174,7 @@ export function StarRating({ dishId, initialRating, disabled }: StarRatingProps)
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 + (cascadeTarget * 0.08) }}
+              transition={{ delay: 1.4 + (cascadeTarget * 0.08) }}
               className="text-muted text-sm mt-2"
             >
               Deine Bewertung: {rating} von 5 Sternen
@@ -182,7 +182,7 @@ export function StarRating({ dishId, initialRating, disabled }: StarRatingProps)
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.7 + (cascadeTarget * 0.08) }}
+              transition={{ delay: 1.6 + (cascadeTarget * 0.08) }}
               className="flex gap-4 mt-6 text-sm"
             >
               <a
