@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 
 interface ConfettiProps {
   onComplete?: () => void;
+  intensity?: number; // 0-5, maps to star rating
 }
 
 interface Particle {
@@ -38,6 +39,21 @@ function generateParticles(count: number): Particle[] {
   }));
 }
 
+function generateRainParticles(count: number): Particle[] {
+  return Array.from({ length: count }, (_, i) => ({
+    id: i + 1000,
+    x: Math.random() * 600 - 300,
+    y: Math.random() * 400 + 200,
+    rotation: Math.random() * 360,
+    scale: Math.random() * 0.5 + 0.5,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    delay: Math.random() * 0.8 + 0.3,
+    width: Math.random() * 4 + 6,
+    height: Math.random() * 4 + 6,
+    shape: "star" as const,
+  }));
+}
+
 function ParticleShape({ particle }: { particle: Particle }) {
   if (particle.shape === "star") {
     return (
@@ -64,26 +80,37 @@ function ParticleShape({ particle }: { particle: Particle }) {
   );
 }
 
-export function Confetti({ onComplete }: ConfettiProps) {
-  const [particles] = useState(() => generateParticles(50));
+function getParticleConfig(intensity: number) {
+  if (intensity <= 2) return { count: 0, rain: 0, duration: 0 };
+  if (intensity === 3) return { count: 20, rain: 0, duration: 1800 };
+  if (intensity === 4) return { count: 40, rain: 0, duration: 2200 };
+  return { count: 50, rain: 30, duration: 3000 };
+}
+
+export function Confetti({ onComplete, intensity = 5 }: ConfettiProps) {
+  const config = getParticleConfig(intensity);
+  const [particles] = useState(() => generateParticles(config.count));
+  const [rainParticles] = useState(() =>
+    config.rain > 0 ? generateRainParticles(config.rain) : []
+  );
 
   useEffect(() => {
-    const timer = setTimeout(() => onComplete?.(), 2500);
+    if (config.count === 0) {
+      onComplete?.();
+      return;
+    }
+    const timer = setTimeout(() => onComplete?.(), config.duration + 500);
     return () => clearTimeout(timer);
-  }, [onComplete]);
+  }, [onComplete, config.count, config.duration]);
+
+  if (config.count === 0) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none z-50 flex items-center justify-center overflow-hidden">
       {particles.map((p) => (
         <motion.div
           key={p.id}
-          initial={{
-            opacity: 1,
-            x: 0,
-            y: 0,
-            rotate: 0,
-            scale: 0,
-          }}
+          initial={{ opacity: 1, x: 0, y: 0, rotate: 0, scale: 0 }}
           animate={{
             opacity: [1, 1, 1, 0],
             x: p.x,
@@ -92,11 +119,32 @@ export function Confetti({ onComplete }: ConfettiProps) {
             scale: [0, p.scale * 1.2, p.scale],
           }}
           transition={{
-            duration: 2,
+            duration: config.duration / 1000,
             delay: p.delay,
             ease: [0.16, 1, 0.3, 1],
           }}
           style={{ position: "absolute" }}
+        >
+          <ParticleShape particle={p} />
+        </motion.div>
+      ))}
+
+      {rainParticles.map((p) => (
+        <motion.div
+          key={p.id}
+          initial={{ opacity: 0, y: -200, x: p.x, rotate: 0, scale: 0 }}
+          animate={{
+            opacity: [0, 1, 1, 0],
+            y: p.y,
+            rotate: p.rotation,
+            scale: [0, p.scale],
+          }}
+          transition={{
+            duration: 2.5,
+            delay: p.delay,
+            ease: [0.25, 0.1, 0.25, 1],
+          }}
+          style={{ position: "absolute", top: 0 }}
         >
           <ParticleShape particle={p} />
         </motion.div>

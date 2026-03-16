@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tischaufsteller - Mittagessen Ranking</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+      .instructions {
+        display: none !important;
+      }
+      .page {
+        box-shadow: none !important;
+        margin: 0 !important;
+      }
+    }
+
+    .instructions {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a1a;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 13px;
+      z-index: 10;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .page {
+      width: 148mm;  /* A5 width */
+      height: 210mm; /* A5 height */
+      background: #fafaf8;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Top half = back side (will be upside down when folded) */
+    .side-back {
+      height: 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 12mm 10mm;
+      transform: rotate(180deg);
+      border-bottom: 1px dashed #ccc;
+      position: relative;
+    }
+
+    /* Bottom half = front side */
+    .side-front {
+      height: 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 8mm 10mm 5mm;
+      position: relative;
+    }
+
+    .fold-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      border-top: 1px dashed #ccc;
+      z-index: 5;
+    }
+
+    @media print {
+      .fold-line {
+        border-top: 1px dashed #ddd;
+      }
+    }
+
+    .label {
+      font-family: 'Inter', sans-serif;
+      font-size: 7pt;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #C9A84C;
+      margin-bottom: 2mm;
+    }
+
+    .headline {
+      font-family: 'Playfair Display', serif;
+      font-size: 15pt;
+      font-weight: 600;
+      color: #1a1a1a;
+      text-align: center;
+      line-height: 1.3;
+      margin-bottom: 2mm;
+    }
+
+    .headline em {
+      font-style: italic;
+      color: #C9A84C;
+    }
+
+    .divider {
+      width: 30mm;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #C9A84C, transparent);
+      margin: 1mm 0;
+    }
+
+    .qr-container {
+      margin: 4mm 0;
+      padding: 3mm;
+      background: white;
+      border-radius: 3mm;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .qr-container img {
+      display: block;
+      width: 30mm;
+      height: 30mm;
+    }
+
+    .subtext {
+      font-family: 'Inter', sans-serif;
+      font-size: 7.5pt;
+      color: #8a8a8a;
+      text-align: center;
+      margin-top: 3mm;
+      line-height: 1.4;
+    }
+
+    .subtext strong {
+      color: #1a1a1a;
+      font-weight: 500;
+    }
+
+    .slogan {
+      font-family: 'Playfair Display', serif;
+      font-size: 10pt;
+      color: #1a1a1a;
+      text-align: center;
+      line-height: 1.4;
+      margin-top: 1mm;
+    }
+
+    .slogan .prize {
+      font-style: italic;
+      color: #C9A84C;
+    }
+
+    .stars {
+      display: flex;
+      gap: 2mm;
+      margin: 1mm 0;
+    }
+
+    .stars svg {
+      width: 5mm;
+      height: 5mm;
+    }
+
+    .domain {
+      font-family: 'Inter', sans-serif;
+      font-size: 6.5pt;
+      color: #aaa;
+      letter-spacing: 0.05em;
+      margin-top: 2mm;
+    }
+
+    .prize-image {
+      width: 35mm;
+      height: auto;
+      border-radius: 2mm;
+      margin: 1mm 0;
+      opacity: 0.85;
+    }
+
+    /* Decorative corner accents */
+    .corner {
+      position: absolute;
+      width: 8mm;
+      height: 8mm;
+      border-color: #C9A84C;
+      opacity: 0.3;
+    }
+    .corner-tl { top: 5mm; left: 5mm; border-top: 0.5pt solid; border-left: 0.5pt solid; }
+    .corner-tr { top: 5mm; right: 5mm; border-top: 0.5pt solid; border-right: 0.5pt solid; }
+    .corner-bl { bottom: 5mm; left: 5mm; border-bottom: 0.5pt solid; border-left: 0.5pt solid; }
+    .corner-br { bottom: 5mm; right: 5mm; border-bottom: 0.5pt solid; border-right: 0.5pt solid; }
+  </style>
+</head>
+<body>
+
+  <div class="instructions">
+    Drucken: <strong>Strg+P</strong> / <strong>Cmd+P</strong> &mdash; A5, ohne Ränder &mdash; Mitte falten, fertig!
+  </div>
+
+  <div class="page">
+
+    <!-- Back side (rotated 180°, will be right-side-up when folded) -->
+    <div class="side-back">
+      <div class="corner corner-tl"></div>
+      <div class="corner corner-tr"></div>
+      <div class="corner corner-bl"></div>
+      <div class="corner corner-br"></div>
+
+      <div class="label">Mittagessen Ranking</div>
+
+      <div class="qr-container">
+        <img src="/qrcode.png" alt="QR-Code">
+      </div>
+
+      <div class="subtext">
+        QR-Code scannen<br>
+        <strong>Bewertung abgeben</strong>
+      </div>
+
+      <div class="domain">mittag.medienhaus-erzgebirge.de</div>
+    </div>
+
+    <div class="fold-line"></div>
+
+    <!-- Front side -->
+    <div class="side-front">
+      <div class="corner corner-tl"></div>
+      <div class="corner corner-tr"></div>
+      <div class="corner corner-bl"></div>
+      <div class="corner corner-br"></div>
+
+      <div class="label">Mittagessen Ranking</div>
+
+      <div class="headline">
+        Jetzt Gericht<br>bewerten!
+      </div>
+
+      <div class="stars">
+        <svg viewBox="0 0 24 24" fill="#C9A84C" stroke="#C9A84C" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24" fill="#C9A84C" stroke="#C9A84C" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24" fill="#C9A84C" stroke="#C9A84C" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="slogan">
+        &hellip; und einen von 10<br>
+        <span class="prize">Fiat Punti</span> gewinnen!
+      </div>
+
+      <img src="/fiatpunto.jpg" alt="Fiat Punto" class="prize-image">
+
+      <div class="qr-container" style="margin-top: 1mm;">
+        <img src="/qrcode.png" alt="QR-Code" style="width: 18mm; height: 18mm;">
+      </div>
+
+      <div class="domain">mittag.medienhaus-erzgebirge.de</div>
+    </div>
+
+  </div>
+
+</body>
+</html>

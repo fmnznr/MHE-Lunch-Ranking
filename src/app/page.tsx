@@ -67,7 +67,15 @@ export default async function HomePage() {
 
       {userRating ? (
         <div className="text-center">
-          <p className="font-serif text-2xl text-gold italic mb-2">Merci!</p>
+          <p className={`font-serif text-gold italic mb-2 ${
+            userRating >= 5 ? "text-3xl" : userRating >= 3 ? "text-2xl" : "text-xl"
+          }`}>
+            {userRating === 1 && "Schade..."}
+            {userRating === 2 && "Geht so"}
+            {userRating === 3 && "Solide! 👍"}
+            {userRating === 4 && "Très bien! ✨"}
+            {userRating === 5 && "Magnifique! 🌟"}
+          </p>
           <p className="text-muted text-sm">
             Deine Bewertung: {userRating} von 5 Sternen
           </p>
